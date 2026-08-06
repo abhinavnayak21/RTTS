@@ -1,5 +1,5 @@
 from sqlalchemy import asc, desc, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.ticket import Ticket
 from app.models.user import User
@@ -36,10 +36,10 @@ def get_all_tickets(
     sort_by: str = "created_at",
     order: str = "desc",
 ):
-    query = db.query(Ticket)
+    query = db.query(Ticket).options(joinedload(Ticket.owner))
 
-    # RBAC
-    if current_user.role != "admin":
+    # RBAC (Case-insensitive check)
+    if current_user.role.lower() != "admin":
         query = query.filter(
             Ticket.owner_id == current_user.id
         )
@@ -95,6 +95,7 @@ def get_ticket_by_id(
 ):
     ticket = (
         db.query(Ticket)
+        .options(joinedload(Ticket.owner))
         .filter(Ticket.id == ticket_id)
         .first()
     )
@@ -102,7 +103,7 @@ def get_ticket_by_id(
     if ticket is None:
         return None
 
-    if current_user.role == "admin":
+    if current_user.role.lower() == "admin":
         return ticket
 
     if ticket.owner_id != current_user.id:
