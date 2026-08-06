@@ -1,11 +1,14 @@
 import os
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.db.database import engine
+from app.db.base import Base
+import app.models  # Ensures all models (User, Ticket) are registered with Base
 from app.core.config import settings
 from app.api.user import router as user_router
 from app.api.ticket import router as ticket_router
@@ -14,10 +17,24 @@ from app.api.admin import router as admin_router
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("app")
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Automatically create tables if they do not exist
+    try:
+        logger.info("Ensuring database tables exist...")
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables initialized successfully.")
+    except Exception as e:
+        logger.error(f"Error creating database tables: {e}")
+    yield
+
+
 app = FastAPI(
     title="Real-Time Ticketing System API",
     description="A help desk and ticket management system built with FastAPI.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 
