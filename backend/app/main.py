@@ -1,5 +1,7 @@
 import os
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
@@ -9,11 +11,24 @@ from app.api.user import router as user_router
 from app.api.ticket import router as ticket_router
 from app.api.admin import router as admin_router
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("app")
+
 app = FastAPI(
     title="Real-Time Ticketing System API",
     description="A help desk and ticket management system built with FastAPI.",
     version="1.0.0",
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled Exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal Server Error: {str(exc)}"},
+    )
+
 
 # CORS Configuration
 # FRONTEND_URL env var is set in Render to your deployed frontend URL
@@ -43,7 +58,6 @@ app.include_router(ticket_router)
 app.include_router(admin_router)
 
 
-
 @app.get("/")
 def root():
     return {
@@ -66,6 +80,7 @@ def health_check():
     try:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
-        return {"status": "ok", "database": display_url}
+            res = conn.execute(text("SELECT count(*) FROM users")).scalar()
+        return {"status": "ok", "database": display_url, "user_count": res}
     except Exception as e:
         return {"status": "error", "database": display_url, "detail": str(e)}
