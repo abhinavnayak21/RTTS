@@ -24,7 +24,7 @@ def create_user(
         name=user.name,
         email=user.email,
         password=hash_password(user.password),
-        role=user.role,
+        role=user.role.lower().strip() if user.role else "customer",
     )
 
     db.add(db_user)
