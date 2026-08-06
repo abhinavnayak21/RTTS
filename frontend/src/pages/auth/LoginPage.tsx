@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
       if (err.response?.data?.detail) {
         setError(err.response.data.detail);
       } else if (err.code === 'ERR_NETWORK' || !err.response) {
-        setError('Cannot connect to backend API server (http://127.0.0.1:8000). Is Uvicorn server running?');
+        setError('Cannot connect to backend API server. Please verify backend is running on Render.');
       } else {
         setError('Invalid email or password. Please try again.');
       }
@@ -118,7 +118,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div style={{ zIndex: 1, fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-          © {new Date().getFullYear()} RTTS HelpDesk Inc. All rights reserved.
+          Â© {new Date().getFullYear()} RTTS HelpDesk Inc. All rights reserved.
         </div>
       </div>
 
@@ -246,7 +246,7 @@ const LoginPage: React.FC = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 style={{
                   width: '100%',
                   padding: '0.75rem 2.5rem 0.75rem 2.5rem',
@@ -320,7 +320,7 @@ const LoginPage: React.FC = () => {
         >
           Need a customer account?{' '}
           <Link to="/register" style={{ fontWeight: '600', color: 'var(--accent)' }}>
-            Register as Customer →
+            Register as Customer â†’
           </Link>
         </div>
       </div>

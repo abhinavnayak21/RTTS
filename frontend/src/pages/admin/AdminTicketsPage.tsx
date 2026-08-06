@@ -264,7 +264,7 @@ const AdminTicketsPage: React.FC = () => {
                 cursor: 'pointer',
               }}
             >
-              {order === 'asc' ? '↑ ASC' : '↓ DESC'}
+              {order === 'asc' ? 'â†‘ ASC' : 'â†“ DESC'}
             </button>
           </div>
         </div>

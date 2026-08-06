@@ -7,6 +7,7 @@ const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'customer' | 'admin'>('customer');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,7 +24,7 @@ const RegisterPage: React.FC = () => {
         name,
         email,
         password,
-        role: 'customer',
+        role,
       });
 
       setSuccess(true);
@@ -122,10 +123,10 @@ const RegisterPage: React.FC = () => {
               marginBottom: '0.5rem',
             }}
           >
-            Customer Registration
+            Create Account
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-            Enter your details below to create your account.
+            Select your role and enter your details to create an account.
           </p>
         </div>
 
@@ -172,6 +173,40 @@ const RegisterPage: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* Account Role Dropdown */}
+          <div>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: 'var(--text-primary)',
+                marginBottom: '0.375rem',
+              }}
+            >
+              Account Type / Role
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as 'customer' | 'admin')}
+              style={{
+                width: '100%',
+                padding: '0.75rem 0.875rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                fontSize: '0.9375rem',
+                fontWeight: '600',
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="customer">Customer Account</option>
+              <option value="admin">Administrator Account</option>
+            </select>
+          </div>
+
           {/* Full Name */}
           <div>
             <label
@@ -304,30 +339,6 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Account Role Badge */}
-          <div
-            style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span>Role:</span>
-            <span
-              style={{
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-full)',
-                backgroundColor: 'var(--status-open-bg)',
-                color: 'var(--status-open-fg)',
-                fontWeight: '600',
-              }}
-            >
-              Customer
-            </span>
-          </div>
-
           {/* Submit */}
           <button
             type="submit"
@@ -347,13 +358,14 @@ const RegisterPage: React.FC = () => {
               gap: '0.5rem',
               boxShadow: 'var(--shadow-md)',
               opacity: isSubmitting || success ? 0.7 : 1,
+              cursor: 'pointer',
             }}
           >
             {isSubmitting ? (
               'Creating Account...'
             ) : (
               <>
-                <span>Register</span>
+                <span>Register Account</span>
                 <ArrowRight size={18} />
               </>
             )}

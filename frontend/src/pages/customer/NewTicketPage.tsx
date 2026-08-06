@@ -187,9 +187,9 @@ const NewTicketPage: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                <option value="Low">Low — General inquiry or minor question</option>
-                <option value="Medium">Medium — Normal issue affecting workflow</option>
-                <option value="High">High — Urgent issue / system feature broken</option>
+                <option value="Low">Low â€” General inquiry or minor question</option>
+                <option value="Medium">Medium â€” Normal issue affecting workflow</option>
+                <option value="High">High â€” Urgent issue / system feature broken</option>
               </select>
             </div>
 

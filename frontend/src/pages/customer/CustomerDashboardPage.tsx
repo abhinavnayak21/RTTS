@@ -202,7 +202,7 @@ const CustomerDashboardPage: React.FC = () => {
                     onClick={() => navigate('/customer/tickets')}
                     style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
                   >
-                    View All →
+                    View All â†’
                   </button>
                 </div>
 
@@ -250,7 +250,7 @@ const CustomerDashboardPage: React.FC = () => {
                         cursor: 'pointer',
                       }}
                     >
-                      Submit Your First Ticket →
+                      Submit Your First Ticket â†’
                     </button>
                   </div>
                 ) : (
@@ -354,19 +354,19 @@ const CustomerDashboardPage: React.FC = () => {
                   }}
                 >
                   <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>✓</span>
+                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
                     <span>
                       <strong>Be specific:</strong> Include steps to reproduce the issue you're experiencing.
                     </span>
                   </li>
                   <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>✓</span>
+                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
                     <span>
                       <strong>Set priority accurately:</strong> Use High priority only for critical blockers.
                     </span>
                   </li>
                   <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>✓</span>
+                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
                     <span>
                       <strong>Check status:</strong> Admins update ticket statuses as they investigate.
                     </span>
