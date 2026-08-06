@@ -1,7 +1,10 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
+from app.db.database import engine
+from app.core.config import settings
 from app.api.user import router as user_router
 from app.api.ticket import router as ticket_router
 from app.api.admin import router as admin_router
@@ -48,3 +51,21 @@ def root():
         "docs": "/docs",
         "redoc": "/redoc",
     }
+
+
+@app.get("/health")
+def health_check():
+    # Mask password in URL for safe display
+    db_url = settings.DATABASE_URL
+    try:
+        at = db_url.index("@")
+        display_url = "postgresql://***:***@" + db_url[at + 1:]
+    except Exception:
+        display_url = "(could not parse URL)"
+
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"status": "ok", "database": display_url}
+    except Exception as e:
+        return {"status": "error", "database": display_url, "detail": str(e)}
