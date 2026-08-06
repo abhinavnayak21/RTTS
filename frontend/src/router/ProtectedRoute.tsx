@@ -28,12 +28,13 @@ export const AdminRoute: React.FC<GuardProps> = ({ children }) => {
     return <LoadingSpinner text="Checking authorization..." />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'admin') {
-    return <Navigate to="/customer/dashboard" replace />;
+  const role = user.role?.toLowerCase();
+  if (role !== 'admin') {
+    return <Navigate to={role === 'customer' ? '/customer/dashboard' : '/login'} replace />;
   }
 
   return <>{children}</>;
@@ -46,12 +47,13 @@ export const CustomerRoute: React.FC<GuardProps> = ({ children }) => {
     return <LoadingSpinner text="Checking authorization..." />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'customer') {
-    return <Navigate to="/admin/dashboard" replace />;
+  const role = user.role?.toLowerCase();
+  if (role !== 'customer') {
+    return <Navigate to={role === 'admin' ? '/admin/dashboard' : '/login'} replace />;
   }
 
   return <>{children}</>;

@@ -27,7 +27,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return response.data;
     } catch (err) {
       console.error('Failed to fetch user context:', err);
-      logout();
+      localStorage.removeItem('rtts_token');
+      setToken(null);
+      setUser(null);
       return null;
     } finally {
       setLoading(false);
