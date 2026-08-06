@@ -12,7 +12,8 @@ from app.models.user import User
 from app.core.security import hash_password
 
 
-engine = create_engine(settings.TEST_DATABASE_URL)
+test_db_url = settings.TEST_DATABASE_URL or settings.DATABASE_URL
+engine = create_engine(test_db_url)
 
 TestingSessionLocal = sessionmaker(
     autocommit=False,
@@ -54,9 +55,8 @@ def client():
         yield client
 
 
-# -------------------------
 # Authentication Fixtures
-# -------------------------
+
 
 # @pytest.fixture
 # def user_data():
