@@ -101,9 +101,7 @@ def auth_headers(client, user_data):
     }
 
 
-# -------------------------
-# Ticket Fixture
-# -------------------------
+# Ticket Fixtures
 
 @pytest.fixture
 def created_ticket(client, auth_headers):
