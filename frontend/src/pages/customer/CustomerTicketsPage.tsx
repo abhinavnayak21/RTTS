@@ -118,7 +118,7 @@ const CustomerTicketsPage: React.FC = () => {
                 letterSpacing: '-0.02em',
               }}
             >
-              My Support Tickets 🎫
+              My Support Tickets
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginTop: '2px' }}>
               Track tasks, manage resolution status, or drag tickets across the board.

@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
       ]
     : [
         {
-          label: 'Customer Dashboard',
+          label: 'Dashboard',
           path: '/customer/dashboard',
           icon: LayoutDashboard,
         },

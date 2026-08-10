@@ -64,7 +64,7 @@ const NewTicketPage: React.FC = () => {
           }}
         >
           <ArrowLeft size={18} />
-          <span>Back to Customer Dashboard</span>
+          <span>Back to Dashboard</span>
         </button>
 
         <div
@@ -100,7 +100,7 @@ const NewTicketPage: React.FC = () => {
                   letterSpacing: '-0.02em',
                 }}
               >
-                Submit Support Ticket
+                Create Support Ticket
               </h1>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                 Please provide details so our admin team can assist you quickly.
@@ -262,10 +262,10 @@ const NewTicketPage: React.FC = () => {
                 }}
               >
                 {isSubmitting ? (
-                  'Submitting...'
+                  'Creating...'
                 ) : (
                   <>
-                    <span>Submit Ticket</span>
+                    <span>Create Ticket</span>
                     <Send size={16} />
                   </>
                 )}

@@ -76,20 +76,20 @@ export const TicketPriorityBadge: React.FC<PriorityBadgeProps> = ({ priority }) 
         return {
           bg: 'rgba(239, 68, 68, 0.16)',
           color: '#f87171',
-          label: 'High 🔥',
+          label: 'High',
         };
       case 'Medium':
         return {
           bg: 'rgba(245, 158, 11, 0.16)',
           color: '#fbbf24',
-          label: 'Medium ⏳',
+          label: 'Medium',
         };
       case 'Low':
       default:
         return {
           bg: 'rgba(56, 189, 248, 0.16)',
           color: '#38bdf8',
-          label: 'Low 💤',
+          label: 'Low',
         };
     }
   };
