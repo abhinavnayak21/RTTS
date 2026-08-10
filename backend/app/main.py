@@ -78,7 +78,7 @@ app.include_router(admin_router)
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to Real-Time Ticketing System API",
+        "message": "Welcome to Real-Time Ticketing System API 🚀",
         "docs": "/docs",
         "redoc": "/redoc",
     }

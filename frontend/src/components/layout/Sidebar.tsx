@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const navItems = isAdmin
     ? [

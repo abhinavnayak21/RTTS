@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
       const token = response.data.access_token;
       const user = await login(token);
 
-      if (user?.role === 'admin') {
+      if (user?.role?.toLowerCase() === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/customer/dashboard');
@@ -118,7 +118,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div style={{ zIndex: 1, fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-          Â© {new Date().getFullYear()} RTTS HelpDesk Inc. All rights reserved.
+          &copy; {new Date().getFullYear()} RTTS HelpDesk Inc. All rights reserved.
         </div>
       </div>
 
@@ -246,7 +246,7 @@ const LoginPage: React.FC = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="••••••••"
                 style={{
                   width: '100%',
                   padding: '0.75rem 2.5rem 0.75rem 2.5rem',
@@ -320,7 +320,7 @@ const LoginPage: React.FC = () => {
         >
           Need a customer account?{' '}
           <Link to="/register" style={{ fontWeight: '600', color: 'var(--accent)' }}>
-            Register as Customer â†’
+            Register as Customer &rarr;
           </Link>
         </div>
       </div>

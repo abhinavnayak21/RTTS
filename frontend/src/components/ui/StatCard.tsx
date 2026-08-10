@@ -152,7 +152,7 @@ const StatCard: React.FC<StatCardProps> = ({
               gap: '2px',
             }}
           >
-            {trend.isUp ? 'â†‘' : 'â†“'} {trend.text}
+            {trend.isUp ? '▲' : '▼'} {trend.text}
           </span>
         )}
       </div>

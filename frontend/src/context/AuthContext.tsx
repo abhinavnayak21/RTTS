@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../api/axios';
-import { User } from '../types';
+import { User, UserRole } from '../types';
 
 interface AuthContextType {
   user: User | null;
@@ -23,8 +23,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const response = await api.get<User>('/users/me', {
         headers: { Authorization: `Bearer ${authToken}` },
       });
-      setUser(response.data);
-      return response.data;
+      const normalizedUser = {
+        ...response.data,
+        role: (response.data.role?.toLowerCase() || 'customer') as UserRole,
+      };
+      setUser(normalizedUser);
+      return normalizedUser;
     } catch (err) {
       console.error('Failed to fetch user context:', err);
       localStorage.removeItem('rtts_token');

@@ -1,5 +1,13 @@
+@font-face {
+  font-family: 'Atlassian Sans';
+  src: url('./assets/fonts/AtlassianSans-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-sans: 'Atlassian Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   
   /* Light Theme Color Tokens */
   --bg-base: #f8fafc;

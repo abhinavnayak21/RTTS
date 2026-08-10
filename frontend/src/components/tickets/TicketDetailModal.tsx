@@ -26,7 +26,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   onUpdateSuccess,
 }) => {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const [status, setStatus] = useState<TicketStatus>(ticket?.status || 'Open');
   const [priority, setPriority] = useState<TicketPriority>(ticket?.priority || 'Medium');

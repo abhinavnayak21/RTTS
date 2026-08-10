@@ -6,8 +6,6 @@ import {
   CheckCircle2,
   AlertCircle,
   PlusCircle,
-  LifeBuoy,
-  ArrowRight,
   RefreshCw,
   Eye,
 } from 'lucide-react';
@@ -170,231 +168,150 @@ const CustomerDashboardPage: React.FC = () => {
               />
             </div>
 
-            {/* Content grid */}
+            {/* Recent Tickets */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: '2fr 1fr',
-                gap: '1.5rem',
-                alignItems: 'start',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '1.5rem',
+                boxShadow: 'var(--shadow-sm)',
               }}
             >
-              {/* Recent Tickets */}
-              <div
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '1.5rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-                  <div>
-                    <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--text-primary)' }}>
-                      My Recent Support Tickets
-                    </h2>
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-                      Track status and updates on your submitted requests
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => navigate('/customer/tickets')}
-                    style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    View All â†’
-                  </button>
-                </div>
-
-                {tickets.length === 0 ? (
-                  <div
-                    style={{
-                      textAlign: 'center',
-                      padding: '3.5rem 1rem',
-                      border: '2px dashed var(--border-color)',
-                      borderRadius: 'var(--radius-md)',
-                      backgroundColor: 'var(--bg-base)',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '52px',
-                        height: '52px',
-                        borderRadius: '50%',
-                        backgroundColor: 'var(--accent-light)',
-                        color: 'var(--accent)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto 1rem',
-                      }}
-                    >
-                      <TicketIcon size={26} />
-                    </div>
-                    <h3 style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-                      No tickets submitted yet
-                    </h3>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', maxWidth: '320px', margin: '0 auto 1.25rem' }}>
-                      If you're facing any issue or have questions, create a new ticket to get started.
-                    </p>
-                    <button
-                      onClick={() => navigate('/customer/tickets/new')}
-                      style={{
-                        padding: '0.625rem 1.25rem',
-                        borderRadius: 'var(--radius-md)',
-                        backgroundColor: 'var(--accent)',
-                        color: '#ffffff',
-                        border: 'none',
-                        fontWeight: '600',
-                        fontSize: '0.875rem',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Submit Your First Ticket â†’
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
-                          <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
-                            SUBJECT / TITLE
-                          </th>
-                          <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
-                            PRIORITY
-                          </th>
-                          <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
-                            STATUS
-                          </th>
-                          <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
-                            SUBMITTED
-                          </th>
-                          <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
-                            DETAILS
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {tickets.map((ticket) => (
-                          <tr key={ticket.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                            <td style={{ padding: '1rem 0.5rem' }}>
-                              <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                                {ticket.title}
-                              </div>
-                            </td>
-
-                            <td style={{ padding: '1rem 0.5rem' }}>
-                              <TicketPriorityBadge priority={ticket.priority} />
-                            </td>
-
-                            <td style={{ padding: '1rem 0.5rem' }}>
-                              <TicketStatusBadge status={ticket.status} />
-                            </td>
-
-                            <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>
-                              {formatDate(ticket.created_at)}
-                            </td>
-
-                            <td style={{ padding: '1rem 0.5rem' }}>
-                              <button
-                                onClick={() => setSelectedTicket(ticket)}
-                                style={{
-                                  padding: '4px 8px',
-                                  borderRadius: 'var(--radius-sm)',
-                                  backgroundColor: 'var(--accent-light)',
-                                  color: 'var(--accent)',
-                                  border: '1px solid #c7d2fe',
-                                  fontWeight: '600',
-                                  fontSize: '0.75rem',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '4px',
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                <Eye size={12} />
-                                <span>Inspect</span>
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-
-              {/* Help & Support Tips Card */}
-              <div
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '1.5rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <LifeBuoy size={22} style={{ color: 'var(--accent)' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div>
                   <h2 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--text-primary)' }}>
-                    Tips for Faster Resolution
+                    My Recent Support Tickets
                   </h2>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+                    Track status and updates on your submitted requests
+                  </p>
                 </div>
-
-                <ul
-                  style={{
-                    listStyle: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.875rem',
-                    fontSize: '0.875rem',
-                    color: 'var(--text-secondary)',
-                    marginBottom: '1.5rem',
-                  }}
-                >
-                  <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
-                    <span>
-                      <strong>Be specific:</strong> Include steps to reproduce the issue you're experiencing.
-                    </span>
-                  </li>
-                  <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
-                    <span>
-                      <strong>Set priority accurately:</strong> Use High priority only for critical blockers.
-                    </span>
-                  </li>
-                  <li style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--status-open-fg)', fontWeight: '700' }}>âœ“</span>
-                    <span>
-                      <strong>Check status:</strong> Admins update ticket statuses as they investigate.
-                    </span>
-                  </li>
-                </ul>
-
                 <button
-                  onClick={() => navigate('/customer/tickets/new')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    borderRadius: 'var(--radius-md)',
-                    backgroundColor: 'var(--accent-light)',
-                    color: 'var(--accent)',
-                    border: '1px solid #c7d2fe',
-                    fontWeight: '600',
-                    fontSize: '0.875rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    cursor: 'pointer',
-                  }}
+                  onClick={() => navigate('/customer/tickets')}
+                  style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  <span>Submit a New Ticket</span>
-                  <ArrowRight size={16} />
+                  View All &rarr;
                 </button>
               </div>
+
+              {tickets.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '3.5rem 1rem',
+                    border: '2px dashed var(--border-color)',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: 'var(--bg-base)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '52px',
+                      height: '52px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--accent-light)',
+                      color: 'var(--accent)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 1rem',
+                    }}
+                  >
+                    <TicketIcon size={26} />
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                    No tickets submitted yet
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', maxWidth: '320px', margin: '0 auto 1.25rem' }}>
+                    If you're facing any issue or have questions, create a new ticket to get started.
+                  </p>
+                  <button
+                    onClick={() => navigate('/customer/tickets/new')}
+                    style={{
+                      padding: '0.625rem 1.25rem',
+                      borderRadius: 'var(--radius-md)',
+                      backgroundColor: 'var(--accent)',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontWeight: '600',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Submit Your First Ticket
+                  </button>
+                </div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
+                        <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          SUBJECT / TITLE
+                        </th>
+                        <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          PRIORITY
+                        </th>
+                        <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          STATUS
+                        </th>
+                        <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          SUBMITTED
+                        </th>
+                        <th style={{ padding: '0.75rem 0.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          DETAILS
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tickets.map((ticket) => (
+                        <tr key={ticket.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                          <td style={{ padding: '1rem 0.5rem' }}>
+                            <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                              {ticket.title}
+                            </div>
+                          </td>
+
+                          <td style={{ padding: '1rem 0.5rem' }}>
+                            <TicketPriorityBadge priority={ticket.priority} />
+                          </td>
+
+                          <td style={{ padding: '1rem 0.5rem' }}>
+                            <TicketStatusBadge status={ticket.status} />
+                          </td>
+
+                          <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>
+                            {formatDate(ticket.created_at)}
+                          </td>
+
+                          <td style={{ padding: '1rem 0.5rem' }}>
+                            <button
+                              onClick={() => setSelectedTicket(ticket)}
+                              style={{
+                                padding: '4px 8px',
+                                borderRadius: 'var(--radius-sm)',
+                                backgroundColor: 'var(--accent-light)',
+                                color: 'var(--accent)',
+                                border: '1px solid #c7d2fe',
+                                fontWeight: '600',
+                                fontSize: '0.75rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <Eye size={12} />
+                              <span>Inspect</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </>
         )}

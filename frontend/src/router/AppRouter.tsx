@@ -23,7 +23,7 @@ const HomeRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return user?.role === 'admin' ? (
+  return user?.role?.toLowerCase() === 'admin' ? (
     <Navigate to="/admin/dashboard" replace />
   ) : (
     <Navigate to="/customer/dashboard" replace />
