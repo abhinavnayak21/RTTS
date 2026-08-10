@@ -6,6 +6,7 @@ import {
   PlusCircle,
   RefreshCw,
   Eye,
+  Trash2,
   LayoutGrid,
   List,
 } from 'lucide-react';
@@ -89,6 +90,20 @@ const CustomerTicketsPage: React.FC = () => {
   const handleAddNewItem = (status: TicketStatus) => {
     setCreateModalStatus(status);
     setIsCreateModalOpen(true);
+  };
+
+  const handleDeleteTicket = async (ticketId: number, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!window.confirm(`Are you sure you want to delete ticket #${ticketId}?`)) {
+      return;
+    }
+    try {
+      await api.delete(`/tickets/${ticketId}`);
+      fetchTickets();
+    } catch (err: any) {
+      console.error('Failed to delete ticket:', err);
+      alert(err.response?.data?.detail || 'Failed to delete ticket.');
+    }
   };
 
   const totalPages = Math.ceil(total / limit) || 1;
@@ -407,25 +422,46 @@ const CustomerTicketsPage: React.FC = () => {
                           </td>
 
                           <td style={{ padding: '1rem' }}>
-                            <button
-                              onClick={() => setSelectedTicket(ticket)}
-                              style={{
-                                padding: '6px 12px',
-                                borderRadius: 'var(--radius-sm)',
-                                backgroundColor: 'var(--accent-light)',
-                                color: 'var(--accent)',
-                                border: '1px solid #c7d2fe',
-                                fontWeight: '600',
-                                fontSize: '0.75rem',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              <Eye size={14} />
-                              <span>View Details</span>
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <button
+                                onClick={() => setSelectedTicket(ticket)}
+                                style={{
+                                  padding: '6px 12px',
+                                  borderRadius: 'var(--radius-sm)',
+                                  backgroundColor: 'var(--accent-light)',
+                                  color: 'var(--accent)',
+                                  border: '1px solid #c7d2fe',
+                                  fontWeight: '600',
+                                  fontSize: '0.75rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <Eye size={14} />
+                                <span>View Details</span>
+                              </button>
+
+                              <button
+                                onClick={(e) => handleDeleteTicket(ticket.id, e)}
+                                title="Delete ticket"
+                                style={{
+                                  padding: '6px 8px',
+                                  borderRadius: 'var(--radius-sm)',
+                                  backgroundColor: '#fef2f2',
+                                  color: '#dc2626',
+                                  border: '1px solid #fecaca',
+                                  fontWeight: '600',
+                                  fontSize: '0.75rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}

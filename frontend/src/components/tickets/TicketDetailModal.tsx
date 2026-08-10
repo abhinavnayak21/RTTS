@@ -348,28 +348,27 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             justifyContent: 'space-between',
           }}
         >
-          {isAdmin ? (
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.625rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: '#fef2f2',
-                color: '#dc2626',
-                border: '1px solid #fecaca',
-                fontWeight: '600',
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-              }}
-            >
-              <Trash2 size={16} />
-              <span>Delete Ticket</span>
-            </button>
-          ) : <div />}
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.625rem 1rem',
+              borderRadius: 'var(--radius-md)',
+              backgroundColor: '#fef2f2',
+              color: '#dc2626',
+              border: '1px solid #fecaca',
+              fontWeight: '600',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+              opacity: isDeleting ? 0.7 : 1,
+            }}
+          >
+            <Trash2 size={16} />
+            <span>{isDeleting ? 'Deleting...' : 'Delete Ticket'}</span>
+          </button>
 
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             <button
