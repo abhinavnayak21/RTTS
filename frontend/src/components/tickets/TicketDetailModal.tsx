@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   Ticket as TicketIcon,
@@ -83,21 +84,8 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
     }).format(new Date(dateString));
   };
 
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 50,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
-      }}
-      onClick={onClose}
-    >
+  return createPortal(
+    <div className="modal-overlay" onClick={onClose}>
       <div
         className="animate-fade-in"
         style={{
@@ -111,6 +99,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -122,7 +111,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'var(--bg-base)',
+            backgroundColor: 'var(--bg-surface)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -201,7 +190,8 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
               alignItems: 'center',
               gap: '0.75rem',
               padding: '0.875rem 1rem',
-              backgroundColor: 'var(--bg-elevated)',
+              backgroundColor: 'var(--bg-base)',
+              border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
             }}
           >
@@ -423,7 +413,8 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

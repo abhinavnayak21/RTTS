@@ -119,7 +119,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 <div className="kanban-empty-col">
                   <span>No tickets in {col.label}</span>
                   <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>
-                    Drag items here or click "+ New item"
+                    Drag items here or click "New item"
                   </span>
                 </div>
               )}
@@ -132,7 +132,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
               onClick={() => onAddNewItem(col.status)}
             >
               <Plus size={16} />
-              <span>+ New item</span>
+              <span> New item</span>
             </button>
           </section>
         );

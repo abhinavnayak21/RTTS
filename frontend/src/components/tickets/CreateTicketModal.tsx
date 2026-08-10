@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Send, AlertCircle, Ticket } from 'lucide-react';
 import { TicketPriority, TicketStatus } from '../../types';
 import api from '../../api/axios';
@@ -65,7 +66,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card animate-fade-in" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -235,7 +236,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

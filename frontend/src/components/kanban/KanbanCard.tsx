@@ -35,12 +35,12 @@ const getTagClassName = (tag: string): string => {
 const getPriorityDetails = (priority: string) => {
   switch (priority) {
     case 'High':
-      return { label: 'High 🔥', className: 'kanban-pill priority-high' };
+      return { label: 'High', className: 'kanban-pill priority-high' };
     case 'Medium':
-      return { label: 'Medium ⏳', className: 'kanban-pill priority-medium' };
+      return { label: 'Medium', className: 'kanban-pill priority-medium' };
     case 'Low':
     default:
-      return { label: 'Low 💤', className: 'kanban-pill priority-low' };
+      return { label: 'Low', className: 'kanban-pill priority-low' };
   }
 };
 
