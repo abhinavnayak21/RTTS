@@ -14,6 +14,7 @@ import StatCard from '../../components/ui/StatCard';
 import { TicketStatusBadge, TicketPriorityBadge } from '../../components/ui/TicketBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import TicketDetailModal from '../../components/tickets/TicketDetailModal';
+import CreateTicketModal from '../../components/tickets/CreateTicketModal';
 import { Ticket, PaginatedResponse } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
@@ -25,6 +26,7 @@ const CustomerDashboardPage: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [stats, setStats] = useState({ open: 0, inProgress: 0, closed: 0 });
 
   const fetchCustomerTickets = async () => {
@@ -82,11 +84,11 @@ const CustomerDashboardPage: React.FC = () => {
                 letterSpacing: '-0.02em',
               }}
             >
-              Welcome, {user?.name || 'Customer'}! 🎫
+              Welcome, {user?.name || 'Customer'}!
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginTop: '2px' }}>
+            {/* <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginTop: '2px' }}>
               How can we assist you today? Track and manage your support tickets below.
-            </p>
+            </p> */}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -111,7 +113,7 @@ const CustomerDashboardPage: React.FC = () => {
             </button>
 
             <button
-              onClick={() => navigate('/customer/tickets/new')}
+              onClick={() => setIsCreateModalOpen(true)}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -128,7 +130,7 @@ const CustomerDashboardPage: React.FC = () => {
               }}
             >
               <PlusCircle size={18} />
-              <span>Submit New Ticket</span>
+              <span>Create New Ticket</span>
             </button>
           </div>
         </div>
@@ -157,7 +159,7 @@ const CustomerDashboardPage: React.FC = () => {
                 value={stats.inProgress}
                 icon={Clock}
                 color="amber"
-                description="Under active investigation"
+                description="Under In progress"
               />
               <StatCard
                 title="Resolved Tickets"
@@ -227,7 +229,7 @@ const CustomerDashboardPage: React.FC = () => {
                     If you're facing any issue or have questions, create a new ticket to get started.
                   </p>
                   <button
-                    onClick={() => navigate('/customer/tickets/new')}
+                    onClick={() => setIsCreateModalOpen(true)}
                     style={{
                       padding: '0.625rem 1.25rem',
                       borderRadius: 'var(--radius-md)',
@@ -321,6 +323,13 @@ const CustomerDashboardPage: React.FC = () => {
           ticket={selectedTicket}
           onClose={() => setSelectedTicket(null)}
           onUpdateSuccess={fetchCustomerTickets}
+        />
+
+        {/* Create Ticket Modal */}
+        <CreateTicketModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={fetchCustomerTickets}
         />
       </div>
     </DashboardLayout>

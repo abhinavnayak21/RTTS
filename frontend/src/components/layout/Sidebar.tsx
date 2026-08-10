@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
           icon: ListFilter,
         },
         {
-          label: 'Submit Ticket',
+          label: 'Create Ticket',
           path: '/customer/tickets/new',
           icon: PlusCircle,
         },
