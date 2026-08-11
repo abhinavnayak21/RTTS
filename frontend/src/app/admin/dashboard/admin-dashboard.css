@@ -1,0 +1,59 @@
+/* Admin Dashboard */
+.admin-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.admin-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.priority-progress-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.priority-progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.priority-progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.priority-progress-bar-fill.high {
+  background-color: #ef4444;
+}
+
+.priority-progress-bar-fill.medium {
+  background-color: #f59e0b;
+}
+
+.priority-progress-bar-fill.low {
+  background-color: #0ea5e9;
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

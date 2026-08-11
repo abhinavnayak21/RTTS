@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const rawBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (typeof window !== 'undefined' && (window as any).__ENV_API_URL) ||
+  'https://rtts-backend.onrender.com';
+
 // Strip trailing slash if present to avoid double slashes like //users/
 const baseURL = rawBaseUrl.replace(/\/+$/, '');
 
@@ -14,9 +18,11 @@ const api = axios.create({
 // Request interceptor to attach JWT token safely
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('rtts_token');
-    if (token && token !== 'null' && token !== 'undefined') {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('rtts_token');
+      if (token && token !== 'null' && token !== 'undefined') {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -27,7 +33,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (typeof window !== 'undefined' && error.response && error.response.status === 401) {
       localStorage.removeItem('rtts_token');
     }
     return Promise.reject(error);

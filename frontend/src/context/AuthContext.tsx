@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../api/axios';
 import { User, UserRole } from '../types';
@@ -15,8 +17,20 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('rtts_token') || null);
+  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Initialize token from localStorage safely in browser
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('rtts_token');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        setLoading(false);
+      }
+    }
+  }, []);
 
   const fetchUser = async (authToken: string): Promise<User | null> => {
     try {
@@ -31,7 +45,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return normalizedUser;
     } catch (err) {
       console.error('Failed to fetch user context:', err);
-      localStorage.removeItem('rtts_token');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('rtts_token');
+      }
       setToken(null);
       setUser(null);
       return null;
@@ -43,20 +59,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (token) {
       fetchUser(token);
-    } else {
-      setLoading(false);
     }
   }, [token]);
 
   const login = async (accessToken: string): Promise<User | null> => {
-    localStorage.setItem('rtts_token', accessToken);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('rtts_token', accessToken);
+    }
     setToken(accessToken);
     const userData = await fetchUser(accessToken);
     return userData;
   };
 
   const logout = () => {
-    localStorage.removeItem('rtts_token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('rtts_token');
+    }
     setToken(null);
     setUser(null);
     setLoading(false);

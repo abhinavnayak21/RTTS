@@ -3,15 +3,15 @@ node_modules
 .pnpm-store
 
 # Build outputs
+.next
 dist
 dist-ssr
 *.local
 
 # Environment variables
 .env
-.env.local
-.env.production
-.env.example
+.env.*
+
 
 # Logs
 npm-debug.log*

@@ -1,0 +1,142 @@
+/* Stat Card */
+.stat-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-card-icon-box.indigo {
+  background-color: #eef2ff;
+  color: #4f46e5;
+}
+
+.stat-card-icon-box.emerald {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.stat-card-icon-box.amber {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.stat-card-icon-box.sky {
+  background-color: #f0f9ff;
+  color: #0284c7;
+}
+
+.stat-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stat-card-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.stat-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Ticket Badges */
+.ticket-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.ticket-badge.status-open {
+  background-color: var(--status-open-bg);
+  color: var(--status-open-fg);
+  border-color: var(--status-open-border);
+}
+
+.ticket-badge.status-inprogress {
+  background-color: var(--status-inprogress-bg);
+  color: var(--status-inprogress-fg);
+  border-color: var(--status-inprogress-border);
+}
+
+.ticket-badge.status-closed {
+  background-color: var(--status-closed-bg);
+  color: var(--status-closed-fg);
+  border-color: var(--status-closed-border);
+}
+
+.ticket-badge.priority-low {
+  background-color: var(--priority-low-bg);
+  color: var(--priority-low-fg);
+  border-color: var(--priority-low-border);
+}
+
+.ticket-badge.priority-medium {
+  background-color: var(--priority-medium-bg);
+  color: var(--priority-medium-fg);
+  border-color: var(--priority-medium-border);
+}
+
+.ticket-badge.priority-high {
+  background-color: var(--priority-high-bg);
+  color: var(--priority-high-fg);
+  border-color: var(--priority-high-border);
+}
+
+.ticket-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Loading Spinner Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+}
+
+.loading-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}

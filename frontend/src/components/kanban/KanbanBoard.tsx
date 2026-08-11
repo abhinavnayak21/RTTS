@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutGrid, AlertCircle, Clock, CheckCircle2 } from 'lucide-react';
 import KanbanCard from './KanbanCard';
 import { Ticket, TicketStatus } from '../../types';
+import './kanban.css';
 
 interface KanbanBoardProps {
   tickets: Ticket[];
@@ -13,28 +16,28 @@ interface KanbanBoardProps {
 interface ColumnMeta {
   status: TicketStatus;
   label: string;
-  pillClass: string;
-  dotClass: string;
+  badgeClass: string;
+  icon: any;
 }
 
 const COLUMNS: ColumnMeta[] = [
   {
     status: 'Open',
     label: 'Open',
-    pillClass: 'kanban-status-pill open',
-    dotClass: 'kanban-status-dot open',
+    badgeClass: 'open',
+    icon: AlertCircle,
   },
   {
     status: 'In Progress',
     label: 'In Progress',
-    pillClass: 'kanban-status-pill in-progress',
-    dotClass: 'kanban-status-dot in-progress',
+    badgeClass: 'inprogress',
+    icon: Clock,
   },
   {
     status: 'Closed',
     label: 'Done',
-    pillClass: 'kanban-status-pill closed',
-    dotClass: 'kanban-status-dot closed',
+    badgeClass: 'closed',
+    icon: CheckCircle2,
   },
 ];
 
@@ -44,99 +47,135 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   onStatusChange,
   onAddNewItem,
 }) => {
-  const [draggedTicketId, setDraggedTicketId] = useState<number | null>(null);
-  const [dragOverColumn, setDragOverColumn] = useState<TicketStatus | null>(null);
+  const [draggedOverCol, setDraggedOverCol] = useState<TicketStatus | null>(null);
+  const [selectedMobileTab, setSelectedMobileTab] = useState<string>('all');
 
   const handleDragStart = (e: React.DragEvent, ticketId: number) => {
     e.dataTransfer.setData('text/plain', ticketId.toString());
-    setDraggedTicketId(ticketId);
+    e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e: React.DragEvent, columnStatus: TicketStatus) => {
+  const handleDragOver = (e: React.DragEvent, status: TicketStatus) => {
     e.preventDefault();
-    if (dragOverColumn !== columnStatus) {
-      setDragOverColumn(columnStatus);
+    e.dataTransfer.dropEffect = 'move';
+    if (draggedOverCol !== status) {
+      setDraggedOverCol(status);
     }
   };
 
-  const handleDragLeave = () => {
-    setDragOverColumn(null);
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDraggedOverCol(null);
   };
 
-  const handleDrop = (e: React.DragEvent, targetStatus: TicketStatus) => {
+  const handleDrop = (e: React.DragEvent, newStatus: TicketStatus) => {
     e.preventDefault();
-    setDragOverColumn(null);
+    setDraggedOverCol(null);
+    const ticketIdStr = e.dataTransfer.getData('text/plain');
+    if (!ticketIdStr) return;
 
-    const ticketIdStr =
-      e.dataTransfer.getData('text/plain') || (draggedTicketId ? draggedTicketId.toString() : '');
     const ticketId = parseInt(ticketIdStr, 10);
-
-    if (ticketId && !isNaN(ticketId)) {
-      const ticket = tickets.find((t) => t.id === ticketId);
-      if (ticket && ticket.status !== targetStatus) {
-        onStatusChange(ticketId, targetStatus);
-      }
+    if (!isNaN(ticketId)) {
+      onStatusChange(ticketId, newStatus);
     }
-    setDraggedTicketId(null);
   };
+
+  // Filter columns on mobile if a specific tab is chosen
+  const visibleColumns = COLUMNS.filter((col) => {
+    if (selectedMobileTab === 'all') return true;
+    return col.status === selectedMobileTab;
+  });
 
   return (
-    <div className="kanban-grid">
-      {COLUMNS.map((col) => {
-        const columnTickets = tickets.filter((t) => t.status === col.status);
-        const isDragOver = dragOverColumn === col.status;
+    <div className="kanban-board-wrapper">
+      {/* Mobile Segmented Column Switcher Tabs */}
+      <div className="kanban-mobile-tabs">
+        <button
+          type="button"
+          className={`kanban-tab-btn ${selectedMobileTab === 'all' ? 'active' : ''}`}
+          onClick={() => setSelectedMobileTab('all')}
+        >
+          <LayoutGrid size={14} />
+          <span>All</span>
+          <span className="kanban-tab-count">{tickets.length}</span>
+        </button>
 
-        return (
-          <section
-            key={col.status}
-            className={`kanban-column ${isDragOver ? 'drag-over' : ''}`}
-            onDragOver={(e) => handleDragOver(e, col.status)}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, col.status)}
-          >
-            {/* Column Header */}
-            <div className="kanban-col-header">
-              <div className={col.pillClass}>
-                <span className={col.dotClass} />
-                <span>{col.label}</span>
+        {COLUMNS.map((col) => {
+          const colTicketsCount = tickets.filter((t) => t.status === col.status).length;
+          const isActive = selectedMobileTab === col.status;
+
+          return (
+            <button
+              key={col.status}
+              type="button"
+              className={`kanban-tab-btn ${isActive ? 'active' : ''}`}
+              onClick={() => setSelectedMobileTab(col.status)}
+            >
+              <span>{col.label}</span>
+              <span className="kanban-tab-count">{colTicketsCount}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Board Columns Grid */}
+      <div className="kanban-board-grid">
+        {visibleColumns.map((col) => {
+          const colTickets = tickets.filter((t) => t.status === col.status);
+          const isOver = draggedOverCol === col.status;
+          const Icon = col.icon;
+
+          return (
+            <div
+              key={col.status}
+              className={`kanban-column ${isOver ? 'drag-over' : ''}`}
+              onDragOver={(e) => handleDragOver(e, col.status)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, col.status)}
+            >
+              {/* Column Header */}
+              <div className="kanban-column-header">
+                <div className="kanban-column-status">
+                  <div className={`kanban-status-badge ${col.badgeClass}`}>
+                    <Icon size={14} />
+                    <span>{col.label}</span>
+                  </div>
+                  <span className="kanban-tab-count">{colTickets.length}</span>
+                </div>
+
+                <button
+                  onClick={() => onAddNewItem(col.status)}
+                  title={`Add ticket to ${col.label}`}
+                  className="kanban-add-btn"
+                >
+                  <Plus size={16} />
+                </button>
               </div>
 
-              <span className="kanban-count-badge">{columnTickets.length}</span>
+              {/* Card List Drop Area */}
+              <div className="kanban-cards-list">
+                {colTickets.length === 0 ? (
+                  <div className="kanban-empty-dropzone">
+                    <span>No {col.label.toLowerCase()} tickets</span>
+                    <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>
+                      Drag tickets here to update
+                    </span>
+                  </div>
+                ) : (
+                  colTickets.map((ticket) => (
+                    <KanbanCard
+                      key={ticket.id}
+                      ticket={ticket}
+                      onClick={() => onTicketClick(ticket)}
+                      onDragStart={handleDragStart}
+                    />
+                  ))
+                )}
+              </div>
             </div>
-
-            {/* Cards List */}
-            <div className="kanban-cards-list">
-              {columnTickets.map((ticket) => (
-                <KanbanCard
-                  key={ticket.id}
-                  ticket={ticket}
-                  onClick={() => onTicketClick(ticket)}
-                  onDragStart={handleDragStart}
-                />
-              ))}
-
-              {columnTickets.length === 0 && (
-                <div className="kanban-empty-col">
-                  <span>No tickets in {col.label}</span>
-                  <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>
-                    Drag items here or click "New item"
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Add New Item Button */}
-            <button
-              type="button"
-              className="kanban-add-btn"
-              onClick={() => onAddNewItem(col.status)}
-            >
-              <Plus size={16} />
-              <span> New item</span>
-            </button>
-          </section>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

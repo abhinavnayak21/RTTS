@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Ticket,
   LayoutDashboard,
@@ -8,16 +11,29 @@ import {
   ShieldCheck,
   UserCheck,
   ListFilter,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import './sidebar.css';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
+    if (onClose) onClose();
     logout();
-    navigate('/login');
+    router.push('/login');
+  };
+
+  const handleNavClick = () => {
+    if (onClose) onClose();
   };
 
   const isAdmin = user?.role?.toLowerCase() === 'admin';
@@ -64,208 +80,90 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside
-      style={{
-        width: '260px',
-        backgroundColor: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border-color)',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        position: 'sticky',
-        top: 0,
-        zIndex: 20,
-      }}
-    >
-      {/* Brand Header */}
+    <>
+      {/* Backdrop for mobile drawer */}
       <div
-        style={{
-          padding: '1.5rem',
-          borderBottom: '1px solid var(--border-color)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-        }}
-      >
-        <div
-          style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: 'var(--radius-md)',
-            backgroundColor: 'var(--accent)',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: 'var(--shadow-sm)',
-          }}
-        >
-          <Ticket size={22} />
-        </div>
-        <div>
-          <h1
-            style={{
-              fontSize: '1.125rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              lineHeight: '1.2',
-            }}
-          >
-            RTTS
-          </h1>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              fontWeight: '500',
-            }}
-          >
-            Support System
-          </span>
-        </div>
-      </div>
+        className={`sidebar-overlay ${isOpen ? 'active' : ''}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
-      {/* Nav Menu */}
-      <nav
-        style={{
-          padding: '1.25rem 1rem',
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.375rem',
-        }}
-      >
-        <div
-          style={{
-            fontSize: '0.7rem',
-            fontWeight: '700',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            color: 'var(--text-muted)',
-            padding: '0 0.75rem 0.5rem',
-          }}
-        >
-          Navigation
-        </div>
-
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              style={({ isActive }) => ({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.625rem 0.875rem',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.875rem',
-                fontWeight: isActive ? '600' : '500',
-                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
-                backgroundColor: isActive ? 'var(--accent-light)' : 'transparent',
-                transition: 'all var(--transition-fast)',
-              })}
-            >
-              <Icon size={18} />
-              <span>{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </nav>
-
-      {/* User Footer */}
-      <div
-        style={{
-          padding: '1rem',
-          borderTop: '1px solid var(--border-color)',
-          backgroundColor: 'var(--bg-base)',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '0.5rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', overflow: 'hidden' }}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                backgroundColor: isAdmin ? '#eef2ff' : '#ecfdf5',
-                color: isAdmin ? '#4f46e5' : '#059669',
-                border: `1px solid ${isAdmin ? '#c7d2fe' : '#a7f3d0'}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.875rem',
-                fontWeight: '700',
-                flexShrink: 0,
-              }}
-            >
-              {getInitials(user?.name)}
+      <aside className={`sidebar-drawer ${isOpen ? 'open' : ''}`}>
+        {/* Brand Header */}
+        <div className="sidebar-header">
+          <div className="sidebar-brand-group">
+            <div className="sidebar-brand-icon">
+              <Ticket size={22} />
             </div>
-            <div style={{ overflow: 'hidden' }}>
-              <div
-                style={{
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  color: 'var(--text-primary)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {user?.name || 'User'}
-              </div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  fontSize: '0.7rem',
-                  fontWeight: '600',
-                  color: isAdmin ? 'var(--accent)' : 'var(--status-open-fg)',
-                }}
-              >
-                {isAdmin ? <ShieldCheck size={12} /> : <UserCheck size={12} />}
-                {user?.role?.toUpperCase()}
-              </div>
+            <div>
+              <h1 className="sidebar-brand-title">RTTS</h1>
+              <span className="sidebar-brand-subtitle">Support System</span>
             </div>
           </div>
 
           <button
-            onClick={handleLogout}
-            title="Log out"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '8px',
-              borderRadius: 'var(--radius-sm)',
-              color: 'var(--text-muted)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'color var(--transition-fast), background var(--transition-fast)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#dc2626';
-              e.currentTarget.style.backgroundColor = '#fef2f2';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-muted)';
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
+            type="button"
+            className="sidebar-close-btn"
+            onClick={onClose}
+            title="Close navigation"
+            aria-label="Close navigation"
           >
-            <LogOut size={18} />
+            <X size={20} />
           </button>
         </div>
-      </div>
-    </aside>
+
+        {/* Navigation List */}
+        <nav className="sidebar-nav">
+          <div className="sidebar-nav-heading">Navigation</div>
+
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.path;
+
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                onClick={handleNavClick}
+                className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+              >
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Profile Section */}
+        <div className="sidebar-footer">
+          <div className="sidebar-user-row">
+            <div className="sidebar-user-profile">
+              <div className={`sidebar-user-avatar ${isAdmin ? 'admin' : ''}`}>
+                {getInitials(user?.name)}
+              </div>
+              <div className="sidebar-user-details">
+                <div className="sidebar-user-name">
+                  {user?.name || 'User'}
+                </div>
+                <div className={`sidebar-user-role ${isAdmin ? 'admin' : ''}`}>
+                  {isAdmin ? <ShieldCheck size={12} /> : <UserCheck size={12} />}
+                  <span>{user?.role?.toUpperCase()}</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Log out"
+              className="sidebar-logout-btn"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
 

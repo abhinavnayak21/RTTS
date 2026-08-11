@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -8,12 +10,12 @@ import {
   Trash2,
   CheckCircle2,
   AlertCircle,
-  Tag,
 } from 'lucide-react';
 import { Ticket, TicketStatus, TicketPriority } from '../../types';
 import { TicketStatusBadge, TicketPriorityBadge } from '../ui/TicketBadge';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
+import './modal.css';
 
 interface TicketDetailModalProps {
   ticket: Ticket | null;
@@ -26,6 +28,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   onClose,
   onUpdateSuccess,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
 
@@ -35,7 +38,18 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState('');
 
-  if (!ticket) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (ticket) {
+      setStatus(ticket.status);
+      setPriority(ticket.priority);
+    }
+  }, [ticket]);
+
+  if (!ticket || !mounted) return null;
 
   const handleUpdate = async () => {
     setIsSaving(true);
@@ -43,7 +57,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
     try {
       await api.put(`/tickets/${ticket.id}`, {
         status,
-        priority,
+        priority: isAdmin ? priority : ticket.priority,
       });
       onUpdateSuccess();
       onClose();
@@ -56,7 +70,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`Are you sure you want to delete ticket #${ticket.id}?`)) {
+    if (!window.confirm(`Are you sure you want to delete Ticket #${ticket.id}?`)) {
       return;
     }
     setIsDeleting(true);
@@ -86,119 +100,44 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
   return createPortal(
     <div className="modal-overlay" onClick={onClose}>
-      <div
-        className="animate-fade-in"
-        style={{
-          backgroundColor: 'var(--bg-surface)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border-color)',
-          boxShadow: 'var(--shadow-xl)',
-          width: '100%',
-          maxWidth: '620px',
-          maxHeight: '90vh',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="modal-card animate-fade-in" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
-        <div
-          style={{
-            padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-color)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'var(--bg-surface)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--accent-light)',
-                color: 'var(--accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+        <div className="modal-header">
+          <div className="modal-header-brand">
+            <div className="modal-header-icon">
               <TicketIcon size={20} />
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>
-                TICKET #{ticket.id}
-              </span>
-              <h2
-                style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '700',
-                  color: 'var(--text-primary)',
-                  lineHeight: '1.3',
-                }}
-              >
-                {ticket.title}
-              </h2>
+              <span className="modal-header-ticket-id">TICKET #{ticket.id}</span>
+              <h2 className="modal-header-title">{ticket.title}</h2>
             </div>
           </div>
 
           <button
+            type="button"
+            className="modal-close-btn"
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: 'var(--radius-sm)',
-            }}
+            title="Close"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div className="modal-body">
           {error && (
-            <div
-              style={{
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: '#fef2f2',
-                border: '1px solid #fecaca',
-                color: '#dc2626',
-                fontSize: '0.875rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
+            <div className="auth-alert-error">
               <AlertCircle size={18} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Badges & Meta */}
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '0.875rem 1rem',
-              backgroundColor: 'var(--bg-base)',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--radius-md)',
-            }}
-          >
+          <div className="modal-meta-row">
             <TicketStatusBadge status={ticket.status} />
             <TicketPriorityBadge priority={ticket.priority} />
 
-            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+            <div className="modal-meta-date">
               <Clock size={14} />
               <span>{formatDate(ticket.created_at)}</span>
             </div>
@@ -206,30 +145,8 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
           {/* Customer Profile (Admin View) */}
           {isAdmin && ticket.owner && (
-            <div
-              style={{
-                padding: '1rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--bg-surface)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-              }}
-            >
-              <div
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  backgroundColor: '#ecfdf5',
-                  color: '#059669',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '700',
-                }}
-              >
+            <div className="modal-user-box">
+              <div className="modal-user-avatar">
                 <User size={18} />
               </div>
               <div>
@@ -248,58 +165,27 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Description
             </h3>
-            <div
-              style={{
-                padding: '1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-base)',
-                border: '1px solid var(--border-color)',
-                fontSize: '0.9375rem',
-                color: 'var(--text-primary)',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap',
-                minHeight: '100px',
-              }}
-            >
+            <div className="modal-desc-box">
               {ticket.description || 'No additional description provided.'}
             </div>
           </div>
 
           {/* Controls Panel */}
-          <div
-            style={{
-              padding: '1rem',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)',
-              backgroundColor: 'var(--bg-surface)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-            }}
-          >
+          <div className="modal-controls-panel">
             <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-primary)' }}>
               Ticket Actions
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="modal-grid-2col">
               {/* Status Selector */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>
+                <label className="form-label" style={{ marginBottom: '0.375rem' }}>
                   Update Status
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value as TicketStatus)}
-                  style={{
-                    width: '100%',
-                    padding: '0.625rem',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-surface)',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                  }}
+                  className="form-control"
                 >
                   <option value="Open">Open</option>
                   <option value="In Progress">In Progress</option>
@@ -309,24 +195,15 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
 
               {/* Priority Selector (Admin only or view) */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>
+                <label className="form-label" style={{ marginBottom: '0.375rem' }}>
                   Priority Level
                 </label>
                 <select
                   value={priority}
                   disabled={!isAdmin}
                   onChange={(e) => setPriority(e.target.value as TicketPriority)}
-                  style={{
-                    width: '100%',
-                    padding: '0.625rem',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-surface)',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    opacity: isAdmin ? 1 : 0.7,
-                  }}
+                  className="form-control"
+                  style={{ opacity: isAdmin ? 1 : 0.7 }}
                 >
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
@@ -338,76 +215,36 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div
-          style={{
-            padding: '1rem 1.5rem',
-            borderTop: '1px solid var(--border-color)',
-            backgroundColor: 'var(--bg-base)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="modal-footer">
+          {/* Left Action: Delete */}
           <button
+            type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.625rem 1rem',
-              borderRadius: 'var(--radius-md)',
-              backgroundColor: '#fef2f2',
-              color: '#dc2626',
-              border: '1px solid #fecaca',
-              fontWeight: '600',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              opacity: isDeleting ? 0.7 : 1,
-            }}
+            className="modal-delete-btn"
           >
             <Trash2 size={16} />
             <span>{isDeleting ? 'Deleting...' : 'Delete Ticket'}</span>
           </button>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          {/* Right Actions: Close & Save */}
+          <div className="modal-footer-right">
             <button
+              type="button"
               onClick={onClose}
-              style={{
-                padding: '0.625rem 1.25rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'transparent',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-secondary)',
-                fontWeight: '600',
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-              }}
+              className="modal-cancel-btn"
             >
               Close
             </button>
 
             <button
+              type="button"
               onClick={handleUpdate}
               disabled={isSaving}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.625rem 1.25rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--accent)',
-                color: '#ffffff',
-                border: 'none',
-                fontWeight: '600',
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-                boxShadow: 'var(--shadow-sm)',
-                opacity: isSaving ? 0.7 : 1,
-              }}
+              className="modal-save-btn"
             >
               <CheckCircle2 size={16} />
-              <span>{isSaving ? 'Saving Changes...' : 'Save Changes'}</span>
+              <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
             </button>
           </div>
         </div>
