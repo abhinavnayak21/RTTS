@@ -1,6 +1,6 @@
 <div align="center">
 
-# RTTS — Real-Time Ticketing System 🎫⚡
+# RTTS — Real-Time Ticketing System
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
