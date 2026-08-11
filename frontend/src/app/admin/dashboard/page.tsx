@@ -200,7 +200,7 @@ export default function AdminDashboardPage() {
                           <th>TICKET</th>
                           <th>CUSTOMER</th>
                           <th>PRIORITY</th>
-                          <th>STATUS & ACTION</th>
+                          <th>STATUS</th>
                           <th>ACTIONS</th>
                         </tr>
                       </thead>
