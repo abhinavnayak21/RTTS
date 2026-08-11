@@ -59,11 +59,12 @@ allow_origins = [
     "http://127.0.0.1:5174",
 ]
 if _frontend_url:
-    allow_origins.append(_frontend_url)
+    allow_origins.append(_frontend_url.rstrip("/"))
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
