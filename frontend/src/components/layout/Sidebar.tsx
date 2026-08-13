@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Ticket,
   LayoutDashboard,
   PlusCircle,
   LogOut,
@@ -14,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Logo from '../ui/Logo';
 import './sidebar.css';
 
 interface SidebarProps {
@@ -92,8 +92,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
         {/* Brand Header */}
         <div className="sidebar-header">
           <div className="sidebar-brand-group">
-            <div className="sidebar-brand-icon">
-              <Ticket size={22} />
+            <div className="sidebar-brand-icon-wrapper">
+              <Logo size={40} />
             </div>
             <div>
               <h1 className="sidebar-brand-title">RTTS</h1>

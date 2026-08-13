@@ -3,8 +3,9 @@
 import React, { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Ticket, Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Logo from '../../components/ui/Logo';
 import api from '../../api/axios';
 import './login.css';
 
@@ -63,8 +64,8 @@ export default function LoginPage() {
       {/* Left Branding Hero Panel */}
       <div className="auth-hero">
         <div className="auth-hero-brand">
-          <div className="auth-hero-icon">
-            <Ticket size={24} color="#ffffff" />
+          <div className="auth-hero-icon-wrapper">
+            <Logo size={40} />
           </div>
           <span className="auth-hero-brand-name">RTTS</span>
         </div>
@@ -84,8 +85,8 @@ export default function LoginPage() {
         <div className="auth-form-card">
           {/* Mobile-only brand header */}
           <div className="auth-mobile-brand">
-            <div className="auth-mobile-icon">
-              <Ticket size={22} />
+            <div className="auth-mobile-icon-wrapper">
+              <Logo size={36} />
             </div>
             <span className="auth-mobile-title">RTTS Support</span>
           </div>

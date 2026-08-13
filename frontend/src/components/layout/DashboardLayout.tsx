@@ -1,9 +1,10 @@
 'use client';
 
 import React, { ReactNode, useState } from 'react';
-import { Menu, Ticket } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
+import Logo from '../ui/Logo';
 import './layout.css';
 
 interface DashboardLayoutProps {
@@ -27,8 +28,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Mobile Top Header */}
         <header className="mobile-header-bar">
           <div className="mobile-brand">
-            <div className="mobile-brand-icon">
-              <Ticket size={18} />
+            <div className="mobile-brand-icon-wrapper">
+              <Logo size={32} />
             </div>
             <div>
               <span className="mobile-brand-title">RTTS</span>
