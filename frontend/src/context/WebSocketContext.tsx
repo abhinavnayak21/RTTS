@@ -81,15 +81,22 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
       wsRef.current = null;
     }
 
-    // Determine WebSocket URL
+    // Determine WebSocket URL from environment variable
     const rawApiUrl =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       (typeof window !== 'undefined' && (window as any).__ENV_API_URL) ||
-      'https://rtts-backend.onrender.com';
+      '';
 
-    const cleanBase = rawApiUrl.replace(/\/+$/, '');
-    const wsProto = cleanBase.startsWith('https') ? 'wss' : 'ws';
-    const host = cleanBase.replace(/^https?:\/\//, '');
+    const cleanBase = rawApiUrl ? rawApiUrl.replace(/\/+$/, '') : '';
+    const wsProto = cleanBase.startsWith('https')
+      ? 'wss'
+      : (typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss' : 'ws');
+    const host = cleanBase
+      ? cleanBase.replace(/^https?:\/\//, '')
+      : (typeof window !== 'undefined' ? window.location.host : '');
+
+    if (!host) return;
+
     const wsUrl = `${wsProto}://${host}/ws/tickets?token=${token}`;
 
     try {

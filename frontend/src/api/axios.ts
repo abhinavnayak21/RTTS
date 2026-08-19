@@ -3,10 +3,10 @@ import axios from 'axios';
 const rawBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   (typeof window !== 'undefined' && (window as any).__ENV_API_URL) ||
-  'https://rtts-backend.onrender.com';
+  '';
 
 // Strip trailing slash if present to avoid double slashes like //users/
-const baseURL = rawBaseUrl.replace(/\/+$/, '');
+const baseURL = rawBaseUrl ? rawBaseUrl.replace(/\/+$/, '') : '';
 
 const api = axios.create({
   baseURL,
