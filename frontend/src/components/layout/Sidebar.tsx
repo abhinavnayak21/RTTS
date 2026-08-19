@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
-  PlusCircle,
   LogOut,
   ShieldCheck,
   UserCheck,
@@ -41,7 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const navItems = isAdmin
     ? [
         {
-          label: 'Admin Dashboard',
+          label: 'Dashboard',
           path: '/admin/dashboard',
           icon: LayoutDashboard,
         },
@@ -61,11 +60,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           label: 'My Tickets',
           path: '/customer/tickets',
           icon: ListFilter,
-        },
-        {
-          label: 'Create Ticket',
-          path: '/customer/tickets/new',
-          icon: PlusCircle,
         },
       ];
 
@@ -90,15 +84,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
 
       <aside className={`sidebar-drawer ${isOpen ? 'open' : ''}`}>
         {/* Brand Header */}
-        <div className="sidebar-header">
-          <div className="sidebar-brand-group">
-            <div className="sidebar-brand-icon-wrapper">
-              <Logo size={40} />
-            </div>
-            <div>
-              <h1 className="sidebar-brand-title">RTTS</h1>
-              <span className="sidebar-brand-subtitle">Support System</span>
-            </div>
+        <div className="sidebar-top-container">
+          <div className="sidebar-brand-wrapper">
+            <Logo size={30} />
+            <span className="sidebar-brand-title">RTTS</span>
           </div>
 
           <button
@@ -108,14 +97,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             title="Close navigation"
             aria-label="Close navigation"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Navigation List */}
         <nav className="sidebar-nav">
-          <div className="sidebar-nav-heading">Navigation</div>
-
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.path;
@@ -127,26 +114,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 onClick={handleNavClick}
                 className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
               >
-                <Icon size={18} />
-                <span>{item.label}</span>
+                <Icon size={18} className="sidebar-nav-icon" />
+                <span className="sidebar-nav-label">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* User Profile Section */}
+        {/* User Profile Footer */}
         <div className="sidebar-footer">
-          <div className="sidebar-user-row">
+          <div className="sidebar-user-card">
             <div className="sidebar-user-profile">
               <div className={`sidebar-user-avatar ${isAdmin ? 'admin' : ''}`}>
                 {getInitials(user?.name)}
               </div>
               <div className="sidebar-user-details">
-                <div className="sidebar-user-name">
+                <div className="sidebar-user-name" title={user?.name || 'User'}>
                   {user?.name || 'User'}
                 </div>
                 <div className={`sidebar-user-role ${isAdmin ? 'admin' : ''}`}>
-                  {isAdmin ? <ShieldCheck size={12} /> : <UserCheck size={12} />}
+                  {isAdmin ? <ShieldCheck size={11} /> : <UserCheck size={11} />}
                   <span>{user?.role?.toUpperCase()}</span>
                 </div>
               </div>
@@ -157,8 +144,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
               onClick={handleLogout}
               title="Log out"
               className="sidebar-logout-btn"
+              aria-label="Log out"
             >
-              <LogOut size={18} />
+              <LogOut size={16} />
             </button>
           </div>
         </div>

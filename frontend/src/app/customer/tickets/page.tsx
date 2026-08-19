@@ -55,6 +55,17 @@ export default function CustomerTicketsPage() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Open creation modal automatically if navigated with ?create=true
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('create') === 'true') {
+        setIsCreateModalOpen(true);
+        window.history.replaceState({}, '', '/customer/tickets');
+      }
+    }
+  }, []);
+
   const fetchTickets = async () => {
     setLoading(true);
     try {
@@ -190,7 +201,7 @@ export default function CustomerTicketsPage() {
               className="btn-primary"
             >
               <PlusCircle size={18} />
-              <span>Submit Ticket</span>
+              <span>Create Ticket</span>
             </button>
           </div>
         </div>

@@ -45,12 +45,13 @@ export default function AdminDashboardPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const statsRes = await api.get<AdminStats>('/admin/stats');
+      const [statsRes, ticketsRes] = await Promise.all([
+        api.get<AdminStats>('/admin/stats'),
+        api.get<PaginatedResponse<Ticket>>('/tickets/', {
+          params: { limit: 5, sort_by: 'created_at', order: 'desc' },
+        }),
+      ]);
       setStats(statsRes.data);
-
-      const ticketsRes = await api.get<PaginatedResponse<Ticket>>('/tickets/', {
-        params: { limit: 5, sort_by: 'created_at', order: 'desc' },
-      });
       setRecentTickets(ticketsRes.data.items || []);
     } catch (err) {
       console.error('Failed to load admin dashboard data:', err);
@@ -187,7 +188,11 @@ export default function AdminDashboardPage() {
                   </button>
                 </div>
 
-                {recentTickets.length === 0 ? (
+                {loading && recentTickets.length === 0 ? (
+                  <div style={{ padding: '2.5rem 1rem', display: 'flex', justifyContent: 'center' }}>
+                    <LoadingSpinner text="Fetching latest tickets..." />
+                  </div>
+                ) : recentTickets.length === 0 ? (
                   <div className="dashboard-empty-state" style={{ border: 'none' }}>
                     <TicketIcon size={40} style={{ margin: '0 auto 0.75rem', opacity: 0.4 }} />
                     <p style={{ fontWeight: '500' }}>No customer tickets submitted yet.</p>
