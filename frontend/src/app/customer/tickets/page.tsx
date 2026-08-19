@@ -291,6 +291,11 @@ export default function CustomerTicketsPage() {
                             <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
                               {ticket.title}
                             </div>
+                            {ticket.category && (
+                              <span style={{ display: 'inline-block', fontSize: '0.7rem', padding: '1px 6px', borderRadius: '4px', backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', marginTop: '3px' }}>
+                                {ticket.category}
+                              </span>
+                            )}
                           </td>
 
                           <td>

@@ -10,19 +10,26 @@ interface KanbanCardProps {
   onDragStart: (e: React.DragEvent, ticketId: number) => void;
 }
 
-// Extract tag and clean description if user entered [Category: Tag]
-export const extractCategoryTag = (description?: string | null): { tag: string; cleanDesc: string } => {
-  if (!description) return { tag: 'Support', cleanDesc: '' };
+// Resolve tag and clean description
+export const extractCategoryTag = (
+  category?: string | null,
+  description?: string | null
+): { tag: string; cleanDesc: string } => {
+  let tag = category?.trim() || '';
+  let cleanDesc = description || '';
 
-  const match = description.match(/^\[Category:\s*([^\]]+)\]\s*([\s\S]*)/i);
-  if (match) {
-    return {
-      tag: match[1].trim(),
-      cleanDesc: match[2].trim(),
-    };
+  // Check if legacy description has [Category: Tag] prefix
+  if (description) {
+    const match = description.match(/^\[Category:\s*([^\]]+)\]\s*([\s\S]*)/i);
+    if (match) {
+      if (!tag) tag = match[1].trim();
+      cleanDesc = match[2].trim();
+    }
   }
 
-  return { tag: 'Support', cleanDesc: description };
+  if (!tag) tag = 'Support';
+
+  return { tag, cleanDesc };
 };
 
 const getTagClassName = (tag: string): string => {
@@ -36,7 +43,7 @@ const getTagClassName = (tag: string): string => {
 };
 
 const KanbanCard: React.FC<KanbanCardProps> = ({ ticket, onClick, onDragStart }) => {
-  const { tag, cleanDesc } = extractCategoryTag(ticket.description);
+  const { tag, cleanDesc } = extractCategoryTag(ticket.category, ticket.description);
   const tagClass = getTagClassName(tag);
 
   return (

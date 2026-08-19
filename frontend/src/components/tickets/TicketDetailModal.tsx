@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Ticket, TicketStatus, TicketPriority } from '../../types';
 import { TicketStatusBadge, TicketPriorityBadge } from '../ui/TicketBadge';
+import { extractCategoryTag } from '../kanban/KanbanCard';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import './modal.css';
@@ -31,6 +32,8 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
+
+  const { tag, cleanDesc } = extractCategoryTag(ticket?.category, ticket?.description);
 
   const [status, setStatus] = useState<TicketStatus>(ticket?.status || 'Open');
   const [priority, setPriority] = useState<TicketPriority>(ticket?.priority || 'Medium');
@@ -136,6 +139,23 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
           <div className="modal-meta-row">
             <TicketStatusBadge status={ticket.status} />
             <TicketPriorityBadge priority={ticket.priority} />
+            {tag && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                  backgroundColor: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                Category: {tag}
+              </span>
+            )}
 
             <div className="modal-meta-date">
               <Clock size={14} />
@@ -166,7 +186,7 @@ const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
               Description
             </h3>
             <div className="modal-desc-box">
-              {ticket.description || 'No additional description provided.'}
+              {cleanDesc || 'No additional description provided.'}
             </div>
           </div>
 

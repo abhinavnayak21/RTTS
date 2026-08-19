@@ -16,6 +16,7 @@ export interface Ticket {
   description?: string | null;
   status: TicketStatus;
   priority: TicketPriority;
+  category?: string | null;
   created_at: string;
   owner_id: number;
   owner?: User;
@@ -25,6 +26,7 @@ export interface TicketCreatePayload {
   title: string;
   description?: string;
   priority?: TicketPriority;
+  category?: string;
 }
 
 export interface TicketUpdatePayload {
@@ -32,6 +34,7 @@ export interface TicketUpdatePayload {
   description?: string;
   status?: TicketStatus;
   priority?: TicketPriority;
+  category?: string;
 }
 
 export interface TicketFilterParams {
@@ -39,6 +42,7 @@ export interface TicketFilterParams {
   limit?: number;
   status?: TicketStatus | '';
   priority?: TicketPriority | '';
+  category?: string;
   search?: string;
   sort_by?: 'created_at' | 'priority' | 'status' | 'title';
   order?: 'asc' | 'desc';

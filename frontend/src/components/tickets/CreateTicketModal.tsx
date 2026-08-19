@@ -42,14 +42,11 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const finalDescription = selectedTag
-        ? `[Category: ${selectedTag}] ${description}`.trim()
-        : description;
-
       const res = await api.post('/tickets/', {
         title,
-        description: finalDescription,
+        description: description.trim() || null,
         priority,
+        category: selectedTag,
       });
 
       if (initialStatus && initialStatus !== 'Open' && res.data?.id) {
