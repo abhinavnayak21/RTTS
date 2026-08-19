@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.api.user import router as user_router
 from app.api.ticket import router as ticket_router
 from app.api.admin import router as admin_router
+from app.api.websocket import router as websocket_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("app")
@@ -74,6 +75,7 @@ app.add_middleware(
 app.include_router(user_router)
 app.include_router(ticket_router)
 app.include_router(admin_router)
+app.include_router(websocket_router)
 
 
 @app.get("/")

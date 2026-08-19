@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
+from app.core.websocket import ws_manager
 from app.crud.ticket import (
     create_ticket,
     delete_ticket,
@@ -33,16 +34,25 @@ router = APIRouter(
     response_model=TicketResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def create_new_ticket(
+async def create_new_ticket(
     ticket: TicketCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return create_ticket(
+    created = create_ticket(
         db=db,
         ticket=ticket,
         current_user=current_user,
     )
+    # Broadcast event in real time to connected sessions
+    try:
+        data = TicketResponse.model_validate(created).model_dump(mode="json")
+        await ws_manager.broadcast("TICKET_CREATED", data, target_user_id=created.owner_id)
+    except Exception as e:
+        # Non-blocking for client response
+        pass
+
+    return created
 
 
 def get_ticket_filter(
@@ -126,7 +136,7 @@ def get_ticket(
     "/{ticket_id}",
     response_model=TicketResponse,
 )
-def update_existing_ticket(
+async def update_existing_ticket(
     ticket_id: int,
     ticket_update: TicketUpdate,
     db: Session = Depends(get_db),
@@ -144,18 +154,27 @@ def update_existing_ticket(
             detail="Ticket not found.",
         )
 
-    return update_ticket(
+    updated = update_ticket(
         db=db,
         ticket=ticket,
         ticket_update=ticket_update,
     )
+
+    # Broadcast event in real time to connected sessions
+    try:
+        data = TicketResponse.model_validate(updated).model_dump(mode="json")
+        await ws_manager.broadcast("TICKET_UPDATED", data, target_user_id=updated.owner_id)
+    except Exception:
+        pass
+
+    return updated
 
 
 @router.delete(
     "/{ticket_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_existing_ticket(
+async def delete_existing_ticket(
     ticket_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -172,9 +191,16 @@ def delete_existing_ticket(
             detail="Ticket not found.",
         )
 
+    owner_id = ticket.owner_id
     delete_ticket(
         db=db,
         ticket=ticket,
     )
+
+    # Broadcast event in real time to connected sessions
+    try:
+        await ws_manager.broadcast("TICKET_DELETED", {"id": ticket_id}, target_user_id=owner_id)
+    except Exception:
+        pass
 
     return None
