@@ -85,9 +85,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     const rawApiUrl =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
       (typeof window !== 'undefined' && (window as any).__ENV_API_URL) ||
-      (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-        ? 'http://localhost:8000'
-        : 'https://rtts-backend.onrender.com');
+      'https://rtts-backend.onrender.com';
 
     const cleanBase = rawApiUrl.replace(/\/+$/, '');
     const wsProto = cleanBase.startsWith('https') ? 'wss' : 'ws';
