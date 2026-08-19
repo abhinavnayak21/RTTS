@@ -12,6 +12,7 @@ class TicketBase(BaseModel):
     title: str
     description: str | None = None
     priority: TicketPriority = TicketPriority.MEDIUM
+    category: str | None = "Support"
 
 
 class TicketCreate(TicketBase):
@@ -23,6 +24,7 @@ class TicketUpdate(BaseModel):
     description: str | None = None
     status: TicketStatus | None = None
     priority: TicketPriority | None = None
+    category: str | None = None
 
 
 class TicketResponse(TicketBase):

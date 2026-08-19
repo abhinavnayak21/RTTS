@@ -50,6 +50,7 @@ def get_ticket_filter(
     limit: int = Query(10, ge=1, le=100),
     status: TicketStatus | None = Query(None),
     priority: TicketPriority | None = Query(None),
+    category: str | None = Query(None),
     search: str | None = Query(None),
     sort_by: Literal[
         "created_at",
@@ -67,6 +68,7 @@ def get_ticket_filter(
         limit=limit,
         status=status,
         priority=priority,
+        category=category,
         search=search,
         sort_by=sort_by,
         order=order,
@@ -89,6 +91,7 @@ def get_tickets(
         limit=filters.limit,
         status=filters.status,
         priority=filters.priority,
+        category=filters.category,
         search=filters.search,
         sort_by=filters.sort_by,
         order=filters.order,

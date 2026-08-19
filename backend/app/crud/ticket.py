@@ -15,6 +15,7 @@ def create_ticket(
         title=ticket.title,
         description=ticket.description,
         priority=ticket.priority,
+        category=ticket.category or "Support",
         owner_id=current_user.id,
     )
 
@@ -32,6 +33,7 @@ def get_all_tickets(
     limit: int,
     status=None,
     priority=None,
+    category=None,
     search: str | None = None,
     sort_by: str = "created_at",
     order: str = "desc",
@@ -54,6 +56,12 @@ def get_all_tickets(
     if priority:
         query = query.filter(
             Ticket.priority == priority
+        )
+
+    # Category Filter
+    if category:
+        query = query.filter(
+            Ticket.category.ilike(f"%{category}%")
         )
 
     # Search

@@ -1,9 +1,12 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.ticket import Ticket
 
 
 class User(Base):

@@ -11,6 +11,7 @@ class TicketFilter(BaseModel):
 
     status: TicketStatus | None = None
     priority: TicketPriority | None = None
+    category: str | None = None
 
     search: str | None = None
 
