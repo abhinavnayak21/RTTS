@@ -20,11 +20,13 @@ import CreateTicketModal from '../../../components/tickets/CreateTicketModal';
 import KanbanBoard from '../../../components/kanban/KanbanBoard';
 import { Ticket, PaginatedResponse, TicketStatus } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 import api from '../../../api/axios';
 import './tickets.css';
 
 export default function CustomerTicketsPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const { subscribe, isConnected } = useWebSocket();
   const router = useRouter();
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -94,6 +96,35 @@ export default function CustomerTicketsPage() {
       fetchTickets();
     }
   }, [page, statusFilter, debouncedSearch, viewMode, isAuthenticated]);
+
+  // Real-time live synchronization via WebSockets
+  useEffect(() => {
+    const unsubscribe = subscribe((event) => {
+      if (event.event === 'TICKET_CREATED') {
+        const newTicket = event.data as Ticket;
+        setTickets((prev) => {
+          if (prev.some((t) => t.id === newTicket.id)) return prev;
+          return [newTicket, ...prev];
+        });
+        setTotal((prev) => prev + 1);
+      } else if (event.event === 'TICKET_UPDATED') {
+        const updated = event.data as Ticket;
+        setTickets((prev) =>
+          prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t))
+        );
+        setSelectedTicket((prev) => (prev?.id === updated.id ? { ...prev, ...updated } : prev));
+      } else if (event.event === 'TICKET_DELETED') {
+        const deletedId = event.data?.id;
+        setTickets((prev) => prev.filter((t) => t.id !== deletedId));
+        setTotal((prev) => Math.max(0, prev - 1));
+        setSelectedTicket((prev) => (prev?.id === deletedId ? null : prev));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe]);
 
   const handleStatusChange = async (ticketId: number, newStatus: TicketStatus) => {
     // Optimistic UI update

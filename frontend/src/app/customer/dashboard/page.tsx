@@ -20,11 +20,13 @@ import TicketDetailModal from '../../../components/tickets/TicketDetailModal';
 import CreateTicketModal from '../../../components/tickets/CreateTicketModal';
 import { Ticket, PaginatedResponse } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 import api from '../../../api/axios';
 import './dashboard.css';
 
 export default function CustomerDashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { subscribe } = useWebSocket();
   const router = useRouter();
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -85,6 +87,19 @@ export default function CustomerDashboardPage() {
       fetchCustomerTickets();
     }
   }, [isAuthenticated]);
+
+  // Real-time live sync for Customer Dashboard
+  useEffect(() => {
+    const unsubscribe = subscribe((event) => {
+      if (event.event === 'TICKET_CREATED' || event.event === 'TICKET_UPDATED' || event.event === 'TICKET_DELETED') {
+        fetchCustomerTickets();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';

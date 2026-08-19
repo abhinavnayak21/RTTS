@@ -17,11 +17,13 @@ import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import TicketDetailModal from '../../../components/tickets/TicketDetailModal';
 import { Ticket, PaginatedResponse } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 import api from '../../../api/axios';
 import './admin-tickets.css';
 
 export default function AdminTicketsPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { subscribe } = useWebSocket();
   const router = useRouter();
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -85,6 +87,30 @@ export default function AdminTicketsPage() {
       fetchTickets();
     }
   }, [page, statusFilter, priorityFilter, debouncedSearch, sortBy, order, isAuthenticated, user]);
+
+  // Real-time live sync for Admin Tickets Table
+  useEffect(() => {
+    const unsubscribe = subscribe((event) => {
+      if (event.event === 'TICKET_CREATED') {
+        fetchTickets();
+      } else if (event.event === 'TICKET_UPDATED') {
+        const updated = event.data as Ticket;
+        setTickets((prev) =>
+          prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t))
+        );
+        setSelectedTicket((prev) => (prev?.id === updated.id ? { ...prev, ...updated } : prev));
+      } else if (event.event === 'TICKET_DELETED') {
+        const deletedId = event.data?.id;
+        setTickets((prev) => prev.filter((t) => t.id !== deletedId));
+        setTotal((prev) => Math.max(0, prev - 1));
+        setSelectedTicket((prev) => (prev?.id === deletedId ? null : prev));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe]);
 
   const totalPages = Math.ceil(total / limit) || 1;
 

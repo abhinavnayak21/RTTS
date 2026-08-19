@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { AuthProvider } from '../context/AuthContext';
+import { WebSocketProvider } from '../context/WebSocketContext';
 
 export const metadata: Metadata = {
   title: 'RTTS - Real-Time Ticket Support System',
@@ -26,7 +27,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon_512.png" />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <WebSocketProvider>{children}</WebSocketProvider>
+        </AuthProvider>
         <Analytics />
       </body>
     </html>

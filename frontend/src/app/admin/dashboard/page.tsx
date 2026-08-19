@@ -19,11 +19,13 @@ import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import TicketDetailModal from '../../../components/tickets/TicketDetailModal';
 import { Ticket, AdminStats, PaginatedResponse, TicketStatus } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 import api from '../../../api/axios';
 import './admin-dashboard.css';
 
 export default function AdminDashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { subscribe } = useWebSocket();
   const router = useRouter();
 
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -65,6 +67,18 @@ export default function AdminDashboardPage() {
       fetchData();
     }
   }, [isAuthenticated, user]);
+
+  // Real-time live sync for Admin Dashboard
+  useEffect(() => {
+    const unsubscribe = subscribe(() => {
+      // Re-fetch aggregate stats and latest queue when any ticket event occurs
+      fetchData();
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe]);
 
   const handleStatusChange = async (ticketId: number, newStatus: TicketStatus) => {
     setUpdatingId(ticketId);
