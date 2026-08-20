@@ -1,0 +1,16 @@
+# Graphify outputs and scripts
+graphify-out/
+graphify.bat
+graphify.cmd
+graphify.ps1
+
+# AI Agents configuration
+.agents/
+
+# Environment and local overrides
+*.local
+.env.local
+
+# Operating System
+.DS_Store
+Thumbs.db
