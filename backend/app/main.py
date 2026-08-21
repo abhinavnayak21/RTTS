@@ -78,7 +78,7 @@ app.include_router(admin_router)
 app.include_router(websocket_router)
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {
         "message": "Welcome to Real-Time Ticketing System API 🚀",
@@ -87,7 +87,7 @@ def root():
     }
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     # Mask password in URL for safe display
     db_url = settings.DATABASE_URL

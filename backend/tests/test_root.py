@@ -10,3 +10,13 @@ def test_root(client: TestClient):
         "docs": "/docs",
         "redoc": "/redoc",
     }
+
+
+def test_root_head(client: TestClient):
+    response = client.head("/")
+    assert response.status_code == 200
+
+
+def test_health_head(client: TestClient):
+    response = client.head("/health")
+    assert response.status_code == 200
