@@ -1,7 +1,7 @@
 import os
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
@@ -78,7 +78,7 @@ app.include_router(admin_router)
 app.include_router(websocket_router)
 
 
-@app.api_route("/", methods=["GET", "HEAD"])
+@app.get("/")
 def root():
     return {
         "message": "Welcome to Real-Time Ticketing System API 🚀",
@@ -87,7 +87,12 @@ def root():
     }
 
 
-@app.api_route("/health", methods=["GET", "HEAD"])
+@app.head("/", include_in_schema=False)
+def root_head():
+    return Response(status_code=200)
+
+
+@app.get("/health")
 def health_check():
     # Mask password in URL for safe display
     db_url = settings.DATABASE_URL
@@ -104,3 +109,8 @@ def health_check():
         return {"status": "ok", "database": display_url, "user_count": res}
     except Exception as e:
         return {"status": "error", "database": display_url, "detail": str(e)}
+
+
+@app.head("/health", include_in_schema=False)
+def health_check_head():
+    return Response(status_code=200)
